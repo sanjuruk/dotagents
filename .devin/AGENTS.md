@@ -1,0 +1,1 @@
+../../../../../../var/folders/rw/bgyzmb911mzdwm6bmnq0cd000000gn/T/dotagents-home-TSh78F/.agents/AGENTS.md

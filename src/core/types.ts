@@ -1,6 +1,6 @@
 export type Scope = 'global' | 'project';
 export type SourceKind = 'file' | 'dir';
-export type Client = 'claude' | 'factory' | 'codex' | 'cursor' | 'opencode';
+export type Client = 'claude' | 'factory' | 'codex' | 'cursor' | 'opencode' | 'ampcode' | 'github' | 'gemini' | 'antigravity' | 'windsurf' | 'aider' | 'goose' | 'kiro' | 'devin';
 
 export type Mapping = {
   name: string;

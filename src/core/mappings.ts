@@ -14,17 +14,37 @@ export async function getMappings(opts: MappingOptions): Promise<Mapping[]> {
   const roots = resolveRoots(opts);
   const canonical = roots.canonicalRoot;
   const claudeOverride = path.join(canonical, 'CLAUDE.md');
+  const geminiOverride = path.join(canonical, 'GEMINI.md');
   const agentsFallback = path.join(canonical, 'AGENTS.md');
-  const agentsSource = await pathExists(claudeOverride) ? claudeOverride : agentsFallback;
-  const clients = new Set<Client>(opts.clients ?? ['claude', 'factory', 'codex', 'cursor', 'opencode']);
+  const claudeSource = await pathExists(claudeOverride) ? claudeOverride : agentsFallback;
+  const geminiSource = await pathExists(geminiOverride) ? geminiOverride : agentsFallback;
+  const clients = new Set<Client>(opts.clients ?? ['claude', 'factory', 'codex', 'cursor', 'opencode', 'ampcode', 'github', 'gemini', 'antigravity', 'windsurf', 'aider', 'goose', 'kiro', 'devin']);
 
   const mappings: Mapping[] = [];
   const includeAgentFiles = opts.scope === 'global';
   if (includeAgentFiles && clients.has('claude')) {
     mappings.push({
       name: 'claude-md',
-      source: agentsSource,
+      source: claudeSource,
       targets: [path.join(roots.claudeRoot, 'CLAUDE.md')],
+      kind: 'file',
+    });
+  }
+
+  if (includeAgentFiles && clients.has('gemini')) {
+    mappings.push({
+      name: 'gemini-md',
+      source: geminiSource,
+      targets: [path.join(roots.geminiRoot, 'GEMINI.md')],
+      kind: 'file',
+    });
+  }
+
+  if (includeAgentFiles && clients.has('antigravity')) {
+    mappings.push({
+      name: 'antigravity-md',
+      source: geminiSource, // Antigravity shares GEMINI.md with Gemini CLI
+      targets: [path.join(roots.antigravityRoot, 'GEMINI.md')],
       kind: 'file',
     });
   }
@@ -34,6 +54,11 @@ export async function getMappings(opts: MappingOptions): Promise<Mapping[]> {
       clients.has('factory') ? path.join(roots.factoryRoot, 'AGENTS.md') : null,
       clients.has('codex') ? path.join(roots.codexRoot, 'AGENTS.md') : null,
       clients.has('opencode') ? path.join(roots.opencodeConfigRoot, 'AGENTS.md') : null,
+      clients.has('ampcode') ? path.join(roots.ampcodeConfigRoot, 'AGENTS.md') : null,
+      clients.has('windsurf') ? path.join(roots.windsurfRoot, 'AGENTS.md') : null,
+      clients.has('aider') ? path.join(roots.aiderRoot, 'AGENTS.md') : null,
+      clients.has('kiro') ? path.join(roots.kiroRoot, 'AGENTS.md') : null,
+      clients.has('devin') ? path.join(roots.devinRoot, 'AGENTS.md') : null,
     ].filter(Boolean) as string[];
 
     if (agentTargets.length > 0) {
@@ -56,6 +81,12 @@ export async function getMappings(opts: MappingOptions): Promise<Mapping[]> {
         clients.has('codex') ? path.join(roots.codexRoot, 'prompts') : null,
         clients.has('opencode') ? path.join(roots.opencodeRoot, 'commands') : null,
         clients.has('cursor') ? path.join(roots.cursorRoot, 'commands') : null,
+        clients.has('gemini') ? path.join(roots.geminiRoot, 'commands') : null,
+        clients.has('antigravity') ? path.join(roots.antigravityRoot, 'commands') : null,
+        clients.has('windsurf') ? path.join(roots.windsurfRoot, 'commands') : null,
+        clients.has('aider') ? path.join(roots.aiderRoot, 'commands') : null,
+        clients.has('goose') ? path.join(roots.gooseConfigRoot, 'commands') : null,
+        clients.has('kiro') ? path.join(roots.kiroRoot, 'commands') : null,
       ].filter(Boolean) as string[],
       kind: 'dir',
     },
@@ -77,6 +108,14 @@ export async function getMappings(opts: MappingOptions): Promise<Mapping[]> {
         clients.has('codex') ? path.join(roots.codexRoot, 'skills') : null,
         clients.has('opencode') ? path.join(roots.opencodeRoot, 'skills') : null,
         clients.has('cursor') ? path.join(roots.cursorRoot, 'skills') : null,
+        // GitHub uses .github/skills for project scope and ~/.copilot/skills for global scope
+        clients.has('github') ? (opts.scope === 'global' ? path.join(roots.copilotRoot, 'skills') : path.join(roots.githubRoot, 'skills')) : null,
+        clients.has('gemini') ? path.join(roots.geminiRoot, 'skills') : null,
+        clients.has('antigravity') ? path.join(roots.antigravityRoot, 'skills') : null,
+        clients.has('windsurf') ? path.join(roots.windsurfRoot, 'skills') : null,
+        clients.has('aider') ? path.join(roots.aiderRoot, 'skills') : null,
+        clients.has('goose') ? path.join(roots.gooseConfigRoot, 'skills') : null,
+        clients.has('kiro') ? path.join(roots.kiroRoot, 'skills') : null,
       ].filter(Boolean) as string[],
       kind: 'dir',
     },

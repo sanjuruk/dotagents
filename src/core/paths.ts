@@ -16,6 +16,18 @@ export type ResolvedRoots = {
   cursorRoot: string;
   opencodeRoot: string;
   opencodeConfigRoot: string;
+  ampcodeConfigRoot: string;
+  githubRoot: string;
+  copilotRoot: string;
+  geminiRoot: string;
+  antigravityRoot: string;
+  antigravityConfigRoot: string;
+  windsurfRoot: string;
+  windsurfConfigRoot: string;
+  aiderRoot: string;
+  gooseConfigRoot: string;
+  kiroRoot: string;
+  devinRoot: string;
   projectRoot: string;
   homeDir: string;
 };
@@ -32,6 +44,18 @@ export function resolveRoots(opts: RootOptions): ResolvedRoots {
       cursorRoot: path.join(homeDir, '.cursor'),
       opencodeRoot: path.join(homeDir, '.opencode'),
       opencodeConfigRoot: path.join(homeDir, '.config', 'opencode'),
+      ampcodeConfigRoot: path.join(homeDir, '.config', 'amp'),
+      githubRoot: path.join(projectRoot, '.github'),
+      copilotRoot: path.join(homeDir, '.copilot'),
+      geminiRoot: path.join(homeDir, '.gemini'),
+      antigravityRoot: path.join(homeDir, '.gemini'), // Shares .gemini with Gemini CLI
+      antigravityConfigRoot: path.join(homeDir, '.config', 'antigravity'),
+      windsurfRoot: path.join(homeDir, '.windsurf'),
+      windsurfConfigRoot: path.join(homeDir, '.codeium', 'windsurf'),
+      aiderRoot: path.join(homeDir, '.aider'),
+      gooseConfigRoot: path.join(homeDir, '.config', 'goose'),
+      kiroRoot: path.join(homeDir, '.kiro'),
+      devinRoot: path.join(projectRoot, '.devin'), // Devin uses project-level only
       projectRoot,
       homeDir,
     };
@@ -44,6 +68,18 @@ export function resolveRoots(opts: RootOptions): ResolvedRoots {
     cursorRoot: path.join(projectRoot, '.cursor'),
     opencodeRoot: path.join(projectRoot, '.opencode'),
     opencodeConfigRoot: path.join(homeDir, '.config', 'opencode'),
+    ampcodeConfigRoot: path.join(homeDir, '.config', 'amp'),
+    githubRoot: path.join(projectRoot, '.github'),
+    copilotRoot: path.join(homeDir, '.copilot'),
+    geminiRoot: path.join(projectRoot, '.gemini'),
+    antigravityRoot: path.join(projectRoot, '.gemini'), // Shares .gemini with Gemini CLI
+    antigravityConfigRoot: path.join(homeDir, '.config', 'antigravity'),
+    windsurfRoot: path.join(projectRoot, '.windsurf'),
+    windsurfConfigRoot: path.join(homeDir, '.codeium', 'windsurf'),
+    aiderRoot: path.join(projectRoot, '.aider'),
+    gooseConfigRoot: path.join(homeDir, '.config', 'goose'),
+    kiroRoot: path.join(projectRoot, '.kiro'),
+    devinRoot: path.join(projectRoot, '.devin'),
     projectRoot,
     homeDir,
   };

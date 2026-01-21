@@ -23,18 +23,21 @@ async function createLink(
   overwrite: boolean,
   backup?: BackupSession,
 ): Promise<{ created: boolean; backedUp: boolean }> {
+  // Compute relative path from target's directory to source for portability
+  const relativeSource = path.relative(path.dirname(target), source);
+
   if (await pathExists(target)) {
     if (!overwrite) return { created: false, backedUp: false };
     const backedUp = backup ? await backupPath(target, backup) : false;
     if (await pathExists(target)) await removePath(target);
     await ensureDir(path.dirname(target));
     const type = kind === 'dir' ? 'junction' : 'file';
-    await fs.promises.symlink(source, target, type as fs.symlink.Type);
+    await fs.promises.symlink(relativeSource, target, type as fs.symlink.Type);
     return { created: true, backedUp };
   }
   await ensureDir(path.dirname(target));
   const type = kind === 'dir' ? 'junction' : 'file';
-  await fs.promises.symlink(source, target, type as fs.symlink.Type);
+  await fs.promises.symlink(relativeSource, target, type as fs.symlink.Type);
   return { created: true, backedUp: false };
 }
 

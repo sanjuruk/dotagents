@@ -60,7 +60,7 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
   const roots = resolveRoots(opts);
   const canonicalRoot = roots.canonicalRoot;
   const candidatesByTarget = new Map<string, MigrationCandidate[]>();
-  const clients = new Set<Client>(opts.clients ?? ['claude', 'factory', 'codex', 'cursor', 'opencode']);
+  const clients = new Set<Client>(opts.clients ?? ['claude', 'factory', 'codex', 'cursor', 'opencode', 'ampcode', 'github', 'gemini', 'antigravity', 'windsurf', 'aider', 'goose', 'kiro', 'devin']);
   const includeAgentFiles = opts.scope === 'global';
 
   const canonicalCommands = path.join(canonicalRoot, 'commands');
@@ -68,6 +68,7 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
   const canonicalSkills = path.join(canonicalRoot, 'skills');
   const canonicalAgents = path.join(canonicalRoot, 'AGENTS.md');
   const canonicalClaude = path.join(canonicalRoot, 'CLAUDE.md');
+  const canonicalGemini = path.join(canonicalRoot, 'GEMINI.md');
 
   const sources = {
     commands: [
@@ -76,6 +77,12 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
       clients.has('codex') ? { label: 'Codex prompts', dir: path.join(roots.codexRoot, 'prompts') } : null,
       clients.has('cursor') ? { label: 'Cursor commands', dir: path.join(roots.cursorRoot, 'commands') } : null,
       clients.has('opencode') ? { label: 'OpenCode commands', dir: path.join(roots.opencodeRoot, 'commands') } : null,
+      clients.has('gemini') ? { label: 'Gemini commands', dir: path.join(roots.geminiRoot, 'commands') } : null,
+      clients.has('antigravity') ? { label: 'Antigravity commands', dir: path.join(roots.antigravityRoot, 'commands') } : null,
+      clients.has('windsurf') ? { label: 'Windsurf commands', dir: path.join(roots.windsurfRoot, 'commands') } : null,
+      clients.has('aider') ? { label: 'Aider commands', dir: path.join(roots.aiderRoot, 'commands') } : null,
+      clients.has('goose') ? { label: 'Goose commands', dir: path.join(roots.gooseConfigRoot, 'commands') } : null,
+      clients.has('kiro') ? { label: 'Kiro commands', dir: path.join(roots.kiroRoot, 'commands') } : null,
     ].filter(Boolean) as { label: string; dir: string }[],
     hooks: [
       clients.has('claude') ? { label: 'Claude hooks', dir: path.join(roots.claudeRoot, 'hooks') } : null,
@@ -87,6 +94,16 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
       clients.has('codex') ? { label: 'Codex skills', dir: path.join(roots.codexRoot, 'skills') } : null,
       clients.has('cursor') ? { label: 'Cursor skills', dir: path.join(roots.cursorRoot, 'skills') } : null,
       clients.has('opencode') ? { label: 'OpenCode skills', dir: path.join(roots.opencodeRoot, 'skills') } : null,
+      // GitHub uses .github/skills for project scope and ~/.copilot/skills for global scope
+      clients.has('github') ? (opts.scope === 'global'
+        ? { label: 'GitHub Copilot skills', dir: path.join(roots.copilotRoot, 'skills') }
+        : { label: 'GitHub skills', dir: path.join(roots.githubRoot, 'skills') }) : null,
+      clients.has('gemini') ? { label: 'Gemini skills', dir: path.join(roots.geminiRoot, 'skills') } : null,
+      clients.has('antigravity') ? { label: 'Antigravity skills', dir: path.join(roots.antigravityRoot, 'skills') } : null,
+      clients.has('windsurf') ? { label: 'Windsurf skills', dir: path.join(roots.windsurfRoot, 'skills') } : null,
+      clients.has('aider') ? { label: 'Aider skills', dir: path.join(roots.aiderRoot, 'skills') } : null,
+      clients.has('goose') ? { label: 'Goose skills', dir: path.join(roots.gooseConfigRoot, 'skills') } : null,
+      clients.has('kiro') ? { label: 'Kiro skills', dir: path.join(roots.kiroRoot, 'skills') } : null,
     ].filter(Boolean) as { label: string; dir: string }[],
     agents: includeAgentFiles
       ? [
@@ -94,11 +111,22 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
           clients.has('factory') ? { label: 'Factory AGENTS.md', file: path.join(roots.factoryRoot, 'AGENTS.md') } : null,
           clients.has('codex') ? { label: 'Codex AGENTS.md', file: path.join(roots.codexRoot, 'AGENTS.md') } : null,
           clients.has('opencode') ? { label: 'OpenCode AGENTS.md', file: path.join(roots.opencodeConfigRoot, 'AGENTS.md') } : null,
+          clients.has('ampcode') ? { label: 'Ampcode AGENTS.md', file: path.join(roots.ampcodeConfigRoot, 'AGENTS.md') } : null,
+          clients.has('windsurf') ? { label: 'Windsurf AGENTS.md', file: path.join(roots.windsurfRoot, 'AGENTS.md') } : null,
+          clients.has('aider') ? { label: 'Aider AGENTS.md', file: path.join(roots.aiderRoot, 'AGENTS.md') } : null,
+          clients.has('kiro') ? { label: 'Kiro AGENTS.md', file: path.join(roots.kiroRoot, 'AGENTS.md') } : null,
+          clients.has('devin') ? { label: 'Devin AGENTS.md', file: path.join(roots.devinRoot, 'AGENTS.md') } : null,
         ].filter(Boolean) as { label: string; file: string }[]
       : [],
     claude: includeAgentFiles
       ? [
           clients.has('claude') ? { label: 'Claude CLAUDE.md', file: path.join(roots.claudeRoot, 'CLAUDE.md') } : null,
+        ].filter(Boolean) as { label: string; file: string }[]
+      : [],
+    gemini: includeAgentFiles
+      ? [
+          clients.has('gemini') ? { label: 'Gemini GEMINI.md', file: path.join(roots.geminiRoot, 'GEMINI.md') } : null,
+          clients.has('antigravity') ? { label: 'Antigravity GEMINI.md', file: path.join(roots.antigravityRoot, 'GEMINI.md') } : null,
         ].filter(Boolean) as { label: string; file: string }[]
       : [],
   } as const;
@@ -149,6 +177,11 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
   for (const src of sources.claude) {
     if (!await pathExists(src.file) || await isSymlink(src.file)) continue;
     addCandidate({ label: src.label, targetPath: canonicalClaude, kind: 'file', action: 'copy', sourcePath: src.file });
+  }
+
+  for (const src of sources.gemini) {
+    if (!await pathExists(src.file) || await isSymlink(src.file)) continue;
+    addCandidate({ label: src.label, targetPath: canonicalGemini, kind: 'file', action: 'copy', sourcePath: src.file });
   }
 
   const auto: MigrationCandidate[] = [];

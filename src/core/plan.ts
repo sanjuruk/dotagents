@@ -40,8 +40,15 @@ async function analyzeTarget(
   if (!exists) return { type: 'link', source, target, kind };
   const stat = await fs.promises.lstat(target);
   if (stat.isSymbolicLink()) {
+    const rawLink = await fs.promises.readlink(target);
     const resolved = await getLinkTargetAbsolute(target);
     if (resolved && path.resolve(resolved) === path.resolve(source)) {
+      // Symlink points to the correct target - check if it needs migration to relative
+      const expectedRelative = path.relative(path.dirname(target), source);
+      if (rawLink !== expectedRelative) {
+        // Current symlink is absolute (or different relative), migrate to relative
+        return { type: 'link', source, target, kind, replaceSymlink: true };
+      }
       return { type: 'noop', source, target };
     }
     if (resolved && opts?.relinkableSources) {
@@ -63,12 +70,19 @@ export async function buildLinkPlan(opts: MappingOptions): Promise<LinkPlan> {
 
   for (const mapping of mappings) {
     tasks.push(...await ensureSourceTask(mapping.source, mapping.kind));
-    const relinkableSources = mapping.name === 'claude-md'
-      ? [
+    let relinkableSources: string[] | undefined;
+    if (mapping.name === 'claude-md') {
+      relinkableSources = [
         path.join(path.dirname(mapping.source), 'AGENTS.md'),
         path.join(path.dirname(mapping.source), 'CLAUDE.md'),
-      ]
-      : undefined;
+      ];
+    } else if (mapping.name === 'gemini-md' || mapping.name === 'antigravity-md') {
+      relinkableSources = [
+        path.join(path.dirname(mapping.source), 'AGENTS.md'),
+        path.join(path.dirname(mapping.source), 'GEMINI.md'),
+      ];
+    }
+
     for (const target of mapping.targets) {
       tasks.push(await analyzeTarget(mapping.source, target, mapping.kind, { relinkableSources }));
     }
