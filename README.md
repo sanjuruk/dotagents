@@ -50,7 +50,7 @@ Global home affects all projects. Project folder only affects the current direct
 
 `.agents/commands` → `~/.gemini/commands`
 
-`.agents/commands` → `~/.gemini/commands` (Antigravity shares with Gemini CLI)
+`.agents/commands` → `~/.gemini/antigravity/commands`
 
 `.agents/commands` → `~/.factory/commands`
 
@@ -92,7 +92,7 @@ Global home affects all projects. Project folder only affects the current direct
 
 `.agents/skills` → `~/.gemini/skills`
 
-`.agents/skills` → `~/.gemini/skills` (Antigravity shares with Gemini CLI)
+`.agents/skills` → `~/.gemini/antigravity/skills`
 
 `.agents/skills` → `~/.factory/skills`
 
@@ -141,7 +141,7 @@ bun run build
 ### Tool-Specific Behaviors
 
 - **Claude**: Claude prompt precedence: if `.agents/CLAUDE.md` exists, it links to `.claude/CLAUDE.md`. Otherwise `.agents/AGENTS.md` is used.
-- **Gemini CLI & Antigravity**: Both share `~/.gemini/GEMINI.md`. If `.agents/GEMINI.md` exists, it's used; otherwise falls back to `AGENTS.md`.
+- **Gemini CLI & Antigravity**: Both share `~/.gemini/GEMINI.md`. Antigravity uses `~/.gemini/antigravity/` subdirectory for skills and commands. If `.agents/GEMINI.md` exists, it's used; otherwise falls back to `AGENTS.md`.
 - **GitHub Copilot**: Uses `.github/skills` for project scope and `~/.copilot/skills` for global scope.
 - **Windsurf**: Configuration in `~/.codeium/windsurf` (global), `.windsurf/` (project).
 - **Aider**: Uses `.aider/` folder and `.aider.conf.yml` configuration file.

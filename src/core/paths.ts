@@ -48,7 +48,7 @@ export function resolveRoots(opts: RootOptions): ResolvedRoots {
       githubRoot: path.join(projectRoot, '.github'),
       copilotRoot: path.join(homeDir, '.copilot'),
       geminiRoot: path.join(homeDir, '.gemini'),
-      antigravityRoot: path.join(homeDir, '.gemini'), // Shares .gemini with Gemini CLI
+      antigravityRoot: path.join(homeDir, '.gemini', 'antigravity'), // Antigravity subdirectory within .gemini
       antigravityConfigRoot: path.join(homeDir, '.config', 'antigravity'),
       windsurfRoot: path.join(homeDir, '.windsurf'),
       windsurfConfigRoot: path.join(homeDir, '.codeium', 'windsurf'),
@@ -72,7 +72,7 @@ export function resolveRoots(opts: RootOptions): ResolvedRoots {
     githubRoot: path.join(projectRoot, '.github'),
     copilotRoot: path.join(homeDir, '.copilot'),
     geminiRoot: path.join(projectRoot, '.gemini'),
-    antigravityRoot: path.join(projectRoot, '.gemini'), // Shares .gemini with Gemini CLI
+    antigravityRoot: path.join(projectRoot, '.gemini', 'antigravity'), // Antigravity subdirectory within .gemini
     antigravityConfigRoot: path.join(homeDir, '.config', 'antigravity'),
     windsurfRoot: path.join(projectRoot, '.windsurf'),
     windsurfConfigRoot: path.join(homeDir, '.codeium', 'windsurf'),

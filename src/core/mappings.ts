@@ -43,8 +43,8 @@ export async function getMappings(opts: MappingOptions): Promise<Mapping[]> {
   if (includeAgentFiles && clients.has('antigravity')) {
     mappings.push({
       name: 'antigravity-md',
-      source: geminiSource, // Antigravity shares GEMINI.md with Gemini CLI
-      targets: [path.join(roots.antigravityRoot, 'GEMINI.md')],
+      source: geminiSource, // Antigravity shares GEMINI.md with Gemini CLI at ~/.gemini/GEMINI.md
+      targets: [path.join(roots.geminiRoot, 'GEMINI.md')],
       kind: 'file',
     });
   }

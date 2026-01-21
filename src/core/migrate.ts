@@ -126,7 +126,7 @@ export async function scanMigration(opts: RootOptions & { clients?: Client[] }):
     gemini: includeAgentFiles
       ? [
           clients.has('gemini') ? { label: 'Gemini GEMINI.md', file: path.join(roots.geminiRoot, 'GEMINI.md') } : null,
-          clients.has('antigravity') ? { label: 'Antigravity GEMINI.md', file: path.join(roots.antigravityRoot, 'GEMINI.md') } : null,
+          clients.has('antigravity') ? { label: 'Antigravity GEMINI.md', file: path.join(roots.geminiRoot, 'GEMINI.md') } : null,
         ].filter(Boolean) as { label: string; file: string }[]
       : [],
   } as const;
